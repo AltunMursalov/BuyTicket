@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="1bb1e0264f064f7a9fff09dd95e0bd21" Name="Diagram1">
+        <EntityTypeShape EntityType="FilmTicketModel.Film" Width="1.5" PointX="0.75" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FilmTicketModel.Hall" Width="1.5" PointX="7.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FilmTicketModel.Sean" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="FilmTicketModel.Ticket" Width="1.5" PointX="5.25" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FilmTicketModel.Type" Width="1.5" PointX="7.75" PointY="5.5" IsExpanded="true" />
+        <AssociationConnector Association="FilmTicketModel.FK_Seans_Film_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="FilmTicketModel.FK_Seans_Hall_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="FilmTicketModel.FK_Seans_Type_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="FilmTicketModel.FK_Ticket_Seans_Id" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

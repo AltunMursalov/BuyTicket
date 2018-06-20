@@ -1,0 +1,155 @@
+﻿<Window x:Class="BuyTicket.MainWindow"
+								xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+								xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+								xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+								xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+								xmlns:sys="clr-namespace:System;assembly=mscorlib"
+								xmlns:System="clr-namespace:System;assembly=mscorlib"
+                                xmlns:common="clr-namespace:BuyTicket.Common"
+								xmlns:local="clr-namespace:BuyTicket"
+                                xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+								mc:Ignorable="d"
+								Title="MainWindow" Height="450" Width="800">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding Reservation}" Key="Enter"/>
+    </Window.InputBindings>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="300"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition MinWidth="300"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="50 0">
+                <Grid Margin="0 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="65"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" Content="Дата" FontSize="16"/>
+                    <DatePicker Grid.Column="1" DisplayDateStart="{x:Static sys:DateTime.Today}"  VerticalAlignment="Center"
+                                SelectedDate="{Binding SelectedDate}"/>
+                </Grid>
+
+                <Grid Margin="0 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="65"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" Content="Фильм" FontSize="16"/>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding Films}" SelectedItem="{Binding SelectedFilm}" DisplayMemberPath="Film_Name"/>
+                </Grid>
+
+                <Grid Margin="0 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="65"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" Content="Тип" FontSize="16"/>
+                    <ComboBox Name="Types" Grid.Column="1" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" SelectedIndex="0" DisplayMemberPath="Type_Name"/>
+                </Grid>
+
+            </StackPanel>
+
+            <StackPanel Grid.Row="1">
+                <Separator Height="20"/>
+                <Label Content="Сеансы:" FontSize="20" HorizontalAlignment="Center"/>
+
+                <DataGrid IsReadOnly="True" Margin="5 0" AutoGenerateColumns="False" ItemsSource="{Binding Seans}" CanUserAddRows="False"
+                          CanUserDeleteRows="False" VerticalScrollBarVisibility="Disabled" SelectedIndex="0"
+                          SelectedItem="{Binding SelectedSeans, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Дата" Width="*" Binding="{Binding Seans_Data, StringFormat=d}"/>
+                        <DataGridTextColumn Header="Фильм" Width="*" Binding="{Binding Film.Film_Name}"/>
+                        <DataGridTextColumn Header="Тип" Width="*" Binding="{Binding Type.Type_Name}"/>
+                        <DataGridTextColumn Header="Зал" Width="*" Binding="{Binding Hall_Id}"/>
+                        <DataGridTextColumn Header="Цена" Width="*" Binding="{Binding Price}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+            </StackPanel>
+
+        </Grid>
+
+        <GridSplitter Grid.Column="1" Margin="10 0" BorderThickness="1" ResizeDirection="Columns" BorderBrush="LightGray"
+																				HorizontalAlignment="Stretch"/>
+
+        <Grid Grid.Column="2" Margin="10 0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Content="Выберите место:" FontSize="18"/>
+
+            <Border Name="Bd" Grid.Row="1" BorderThickness="1">
+
+                <ListBox x:Name="HallMap" Margin="5" ItemsSource="{Binding Seats}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionMode="Multiple" SelectionChanged="HallMap_SelectionChanged">
+                    <i:Interaction.Behaviors>
+                        <common:MultiSelectionBehavior SelectedItems="{Binding SelectedSeats, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </i:Interaction.Behaviors>
+
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Name="SeatItem" Margin="5" BorderThickness="2" BorderBrush="Green">
+                                <StackPanel Margin="3">
+                                    <TextBlock Text="{Binding Path=Row, StringFormat=Ряд: {0}}"/>
+                                    <TextBlock Text="{Binding Path=Col, StringFormat=Место: {0}}"/>
+                                </StackPanel>
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsBusy.IsEmpty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter TargetName="SeatItem" Property="BorderBrush" Value="Red"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsBusy.IsEmpty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                    <Setter Property="Focusable" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </Border>
+
+            <Grid Grid.Row="2" Margin="0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" Content="Введите почту:" FontSize="16"/>
+
+                <TextBox Height="20" Text="{Binding Email, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1"/>
+            </Grid>
+
+            <Button Grid.Row="3" Margin="10" Command="{Binding Reservation}" Content="Забронировать" HorizontalAlignment="Right" Height="30"/>
+        </Grid>
+
+    </Grid>
+</Window>
